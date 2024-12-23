@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Chatbot</title>
+</head>
+<body>
+   <h1>Chat with the Bot</h1>
+   <div id="chat-container"></div>
+   <input type="text" id="user-input" placeholder="Type your message">
+   <button onclick="sendMessage()">Send</button>
+
+
+   <script>
+       function sendMessage() {
+           const userInput = document.getElementById('user-input').value;
+           const xhr = new XMLHttpRequest();
+           xhr.open('POST', 'http://127.0.0.1:5000/chat', true);
+           xhr.setRequestHeader('Content-Type', 'application/json'); // Use application/json
+           xhr.onload = function() {
+               if (xhr.status === 200) {
+                   const response = JSON.parse(xhr.responseText);
+                   const chatContainer = document.getElementById('chat-container');
+                   chatContainer.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+                   chatContainer.innerHTML += `<p><strong>Bot:</strong> ${response.response}</p>`;
+               } else {
+                   console.error('Request failed.  Returned status of ' + xhr.status);
+               }
+           };
+           xhr.onerror = function() {
+               console.error('Request failed.');
+           };
+           xhr.send(JSON.stringify({ user_input: userInput })); // Send data as JSON
+       }
+   </script>
+</body>
+</html>
